@@ -5,6 +5,15 @@ SETLOCAL
 REM Move to repo root (parent of scripts folder)
 cd /d "%~dp0\.."
 
+REM Use parent of current working directory as base (..\util\uv-bin\uv.exe)
+set "UV_EXE=%cd%\..\util\uv-bin\uv.exe"
+
+if not exist "%UV_EXE%" (
+  echo uv binary not found at %UV_EXE%. Run scripts\download_uv_standalone.ps1 first.
+  pause
+  exit /b 1
+)
+
 if "%1"=="" (
   set PORT=8001
 ) else (
@@ -18,20 +27,11 @@ if errorlevel 1 (
   exit /b 1
 )
 
-set PIP_MIRROR=https://mirrors.aliyun.com/pypi/simple
-
-where uv >nul 2>nul
-if errorlevel 1 (
-  echo uv not found, installing via Aliyun mirror...
-  python -m pip install --upgrade pip --index-url %PIP_MIRROR% --trusted-host mirrors.aliyun.com
-  python -m pip install uv --index-url %PIP_MIRROR% --trusted-host mirrors.aliyun.com
-)
-
 echo Ensuring Python 3.11.9 with uv...
-uv python install 3.11.9
+"%UV_EXE%" python install 3.11.9
 
 echo Syncing dependencies with uv (Aliyun mirror)...
-uv sync --index-url %PIP_MIRROR% --trusted-host mirrors.aliyun.com
+"%UV_EXE%" sync
 
 @REM echo Starting uvicorn on port %PORT%...
 @REM python -m uvicorn api.api_handler:app --host 0.0.0.0 --port %PORT%

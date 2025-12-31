@@ -22,14 +22,20 @@ kokoro = [
     "misaki[zh]>=0.8.2",
     "soundfile",
 ]
-"f5-tts" = [
-    "f5-tts==1.1.4",
-]
+# "f5-tts" = [
+#     "f5-tts==1.1.4",
+# ]
 
 [project.scripts]
 ai-tts-cli = "cli:cli"
 ai-tts-test = "test_client:main"
 
-[tool.uv.pip]
+[[tool.uv.index]]
 # Use Aliyun mirror for PyPI
-index-url = "https://mirrors.aliyun.com/pypi/simple"
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple"
+default = true
+
+[[tool.uv.index]]
+name = "huaweicloud"
+url = "https://mirrors.huaweicloud.com/repository/pypi/simple/"

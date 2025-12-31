@@ -3,8 +3,15 @@ Param(
 	[switch]$Reload
 )
 
-# Determine repository root (parent of scripts folder)
-$repoRoot = Split-Path -Parent $PSScriptRoot
+# Resolve uv from parent of current working directory (../util/uv-bin/uv.exe)
+$cwdParent = Split-Path -Parent (Get-Location).Path
+$uvPath = Join-Path $cwdParent "util/uv-bin/uv.exe"
+
+# Ensure bundled uv binary exists
+if (-not (Test-Path $uvPath)) {
+	Write-Error "uv binary not found at $uvPath. Run scripts/download_uv_standalone.ps1 first."
+	exit 1
+}
 
 # Check for Python
 $py = Get-Command python -ErrorAction SilentlyContinue
@@ -13,22 +20,12 @@ if (-not $py) {
 	exit 1
 }
 
-$mirror = "https://mirrors.aliyun.com/pypi/simple"
-
-# Ensure uv is available (install via mirror if missing)
-$uv = Get-Command uv -ErrorAction SilentlyContinue
-if (-not $uv) {
-	Write-Output "uv not found, installing via Aliyun mirror..."
-	python -m pip install --upgrade pip --index-url $mirror --trusted-host mirrors.aliyun.com
-	python -m pip install uv --index-url $mirror --trusted-host mirrors.aliyun.com
-}
-
 # Ensure Python 3.11.9 is available to uv
-uv python install 3.11.9
+& $uvPath python install 3.11.9
 
 # Sync dependencies using uv with Aliyun mirror
 Write-Output "Syncing dependencies with uv (Aliyun mirror)..."
-uv sync --index-url $mirror --trusted-host mirrors.aliyun.com
+& $uvPath sync
 
 # Write-Output "Starting uvicorn (host 0.0.0.0 port $Port)..."
 # if ($Reload) {
