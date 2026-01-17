@@ -59,6 +59,9 @@ explicit = true
 
 [tool.uv]
 conflicts = [[{ extra = "torch-cpu" }, { extra = "torch-cu121" }]]
+python-downloads = "automatic"
+# Use GitHub mirror for managed Python downloads
+python-install-mirror = "https://python-standalone.org/mirror/astral-sh/python-build-standalone/"
 
 [tool.uv.sources]
 torch = [
