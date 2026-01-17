@@ -25,9 +25,6 @@ if "%1"=="" (
   set PORT=%1
 )
 
-echo Ensuring Python 3.11.9 with uv...
-"%UV_EXE%" python install 3.11.9
-
 echo Syncing dependencies with uv (Aliyun mirror)...
 where nvidia-smi >nul 2>nul
 if errorlevel 1 (
@@ -37,6 +34,10 @@ if errorlevel 1 (
   echo NVIDIA GPU detected, syncing CUDA extras...
   "%UV_EXE%" sync --extra kokoro --extra torch-cu121
 )
+
+echo Downloading models...
+set "HF_ENDPOINT=https://hf-mirror.com"
+"%UV_EXE%" run .\cli.py download --model-names=kokoro
 
 echo Starting service on port %PORT%...
 "%UV_EXE%" run .\cli.py run --model-names=kokoro --port %PORT%

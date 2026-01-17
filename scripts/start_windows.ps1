@@ -22,7 +22,7 @@ function Ensure-Uv {
 Ensure-Uv
 
 # Ensure Python 3.11.9 is available to uv
-uv python install 3.11.9
+# uv python install 3.11.9
 
 function Test-NvidiaGpu {
 	$nv = Get-Command nvidia-smi -ErrorAction SilentlyContinue
@@ -44,6 +44,12 @@ if (Test-NvidiaGpu) {
 	Write-Output "No NVIDIA GPU detected, syncing CPU extras..."
 	uv sync --extra kokoro --extra torch-cpu
 }
+
+# Download models
+Write-Output "Downloading models..."
+$env:HF_ENDPOINT = "https://hf-mirror.com"
+uv run .\cli.py download --model-names=kokoro
+# Start the service
 
 Write-Output "Starting service (host 0.0.0.0 port $Port)..."
 uv run .\cli.py run --model-names=kokoro --port $Port
