@@ -14,6 +14,7 @@ dependencies = [
     "soundfile",
     "uvicorn",
     "toml",
+    "en-core-web-sm>=3.8.0",
 ]
 
 [project.optional-dependencies]
@@ -21,6 +22,12 @@ kokoro = [
     "kokoro==0.9.4",
     "misaki[zh]>=0.8.2",
     "soundfile",
+]
+torch-cpu = [
+    "torch==2.5.1+cpu",
+]
+torch-cu121 = [
+    "torch==2.5.1+cu121",
 ]
 # "f5-tts" = [
 #     "f5-tts==1.1.4",
@@ -39,3 +46,25 @@ default = true
 [[tool.uv.index]]
 name = "huaweicloud"
 url = "https://mirrors.huaweicloud.com/repository/pypi/simple/"
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[tool.uv]
+conflicts = [[{ extra = "torch-cpu" }, { extra = "torch-cu121" }]]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "torch-cpu" },
+    { index = "pytorch-cu121", extra = "torch-cu121" },
+]
+en-core-web-sm = [
+    { url = "https://bgithub.xyz/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
+]

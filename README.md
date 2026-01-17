@@ -89,19 +89,30 @@ python ./test_client.py --model index-tts --voice 男性声音1
 
 ## Windows 快速启动
 
+### uv 安装(若没有uv脚本)
+
+使用`download_uv_standalone.ps1`文件，可以将独立的uv包安装至上级目录中的util\uv-bin文件夹中
+
+> ps:该方法是一个暂时性的替代，可能会有更优雅的解决方法
+
+
+### 服务自动运行 
+
+
 - 脚本位置: 提供两个便捷脚本： [scripts/start_windows.ps1](scripts/start_windows.ps1#L1) 和 [scripts/start_windows.bat](scripts/start_windows.bat#L1)。
-- 作用: 在无环境的 Windows 机器上自动创建虚拟环境、使用阿里云 PyPI 镜像安装依赖，并以 `uvicorn` 启动服务（默认端口 `8000`）。
+- 作用: 在无环境的 Windows 机器上自动创建虚拟环境、使用阿里云 PyPI 镜像安装依赖，并启动服务（默认端口 `8000`）。
 - PowerShell 示例: 在项目根目录打开 PowerShell（以管理员身份可选），运行：
 
   ```powershell
-  .\scripts\start_windows.ps1 -Port 8000 -Reload
+  .\scripts\start_windows.ps1
   ```
 
 - CMD 示例: 在项目根目录打开命令提示符，运行：
 
   ```cmd
-  .\scripts\start_windows.bat 8000
+  .\scripts\start_windows.bat
   ```
 
 - 说明: 脚本会检查 `python` 是否可用，若找不到会提示安装。脚本会在仓库根目录下创建 `.venv` 虚拟环境，并通过阿里云镜像安装 `requirements.txt`。
 
+> ps:目前的uv路径是写死的，若需要可以自行修改

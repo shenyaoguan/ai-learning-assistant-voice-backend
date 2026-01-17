@@ -23,9 +23,29 @@ if (-not $py) {
 # Ensure Python 3.11.9 is available to uv
 & $uvPath python install 3.11.9
 
+function Test-NvidiaGpu {
+	$nv = Get-Command nvidia-smi -ErrorAction SilentlyContinue
+	if (-not $nv) { return $false }
+	try {
+		& $nv -L | Out-Null
+		return $true
+	} catch {
+		return $false
+	}
+}
+
 # Sync dependencies using uv with Aliyun mirror
 Write-Output "Syncing dependencies with uv (Aliyun mirror)..."
-& $uvPath sync
+if (Test-NvidiaGpu) {
+	Write-Output "NVIDIA GPU detected, syncing CUDA extras..."
+	& $uvPath sync --extra kokoro --extra torch-cu121
+} else {
+	Write-Output "No NVIDIA GPU detected, syncing CPU extras..."
+	& $uvPath sync --extra kokoro --extra torch-cpu
+}
+
+Write-Output "Starting service (host 0.0.0.0 port $Port)..."
+& $uvPath run .\cli.py run --model-names=kokoro --port $Port
 
 # Write-Output "Starting uvicorn (host 0.0.0.0 port $Port)..."
 # if ($Reload) {
