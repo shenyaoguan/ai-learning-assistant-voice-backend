@@ -5,11 +5,16 @@ SETLOCAL
 REM Move to repo root (parent of scripts folder)
 cd /d "%~dp0\.."
 
-REM Use parent of current working directory as base (..\util\uv-bin\uv.exe)
-set "UV_EXE=%cd%\..\util\uv-bin\uv.exe"
+REM Prefer uv from PATH, fallback to official installer
+call :resolve_uv
+if "%UV_EXE%"=="" (
+  echo uv not found in PATH. Installing via official script...
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://astral.sh/uv/install.ps1 ^| iex"
+  call :resolve_uv
+)
 
-if not exist "%UV_EXE%" (
-  echo uv binary not found at %UV_EXE%. Run scripts\download_uv_standalone.ps1 first.
+if "%UV_EXE%"=="" (
+  echo uv not found after installation. Please restart the shell or ensure uv is on PATH.
   pause
   exit /b 1
 )
@@ -18,13 +23,6 @@ if "%1"=="" (
   set PORT=8001
 ) else (
   set PORT=%1
-)
-
-where python >nul 2>nul
-if errorlevel 1 (
-  echo Python not found. Install Python 3.8+ and add it to PATH.
-  pause
-  exit /b 1
 )
 
 echo Ensuring Python 3.11.9 with uv...
@@ -47,3 +45,11 @@ echo Starting service on port %PORT%...
 @REM python -m uvicorn api.api_handler:app --host 0.0.0.0 --port %PORT%
 
 ENDLOCAL
+exit /b 0
+
+:resolve_uv
+set "UV_EXE="
+for /f "delims=" %%i in ('where uv 2^>nul') do set "UV_EXE=%%i"
+if "%UV_EXE%"=="" if exist "%USERPROFILE%\.cargo\bin\uv.exe" set "UV_EXE=%USERPROFILE%\.cargo\bin\uv.exe"
+if "%UV_EXE%"=="" if exist "%LOCALAPPDATA%\uv\bin\uv.exe" set "UV_EXE=%LOCALAPPDATA%\uv\bin\uv.exe"
+exit /b 0
