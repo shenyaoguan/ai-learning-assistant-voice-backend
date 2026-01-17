@@ -23,6 +23,7 @@ Ensure-Uv
 
 # Ensure Python 3.11.9 is available to uv
 uv python install 3.11.9
+uv python install 3.11.9
 
 function Test-NvidiaGpu {
 	$nv = Get-Command nvidia-smi -ErrorAction SilentlyContinue
@@ -40,12 +41,15 @@ Write-Output "Syncing dependencies with uv (Aliyun mirror)..."
 if (Test-NvidiaGpu) {
 	Write-Output "NVIDIA GPU detected, syncing CUDA extras..."
 	uv sync --extra kokoro --extra torch-cu121
+	uv sync --extra kokoro --extra torch-cu121
 } else {
 	Write-Output "No NVIDIA GPU detected, syncing CPU extras..."
+	uv sync --extra kokoro --extra torch-cpu
 	uv sync --extra kokoro --extra torch-cpu
 }
 
 Write-Output "Starting service (host 0.0.0.0 port $Port)..."
+uv run .\cli.py run --model-names=kokoro --port $Port
 uv run .\cli.py run --model-names=kokoro --port $Port
 
 # Write-Output "Starting uvicorn (host 0.0.0.0 port $Port)..."
