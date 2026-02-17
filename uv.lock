@@ -45,7 +45,7 @@ torch-cu121 = [
 [package.metadata]
 requires-dist = [
     { name = "click" },
-    { name = "en-core-web-sm", url = "https://bgithub.xyz/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
+    { name = "en-core-web-sm", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
     { name = "fastapi" },
     { name = "kokoro", marker = "extra == 'kokoro'", specifier = "==0.9.4" },
     { name = "misaki", extras = ["zh"], marker = "extra == 'kokoro'", specifier = ">=0.8.2" },
@@ -334,9 +334,9 @@ sdist = { url = "https://mirrors.huaweicloud.com/repository/pypi/packages/a2/55/
 [[package]]
 name = "en-core-web-sm"
 version = "3.8.0"
-source = { url = "https://bgithub.xyz/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
+source = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
 wheels = [
-    { url = "https://bgithub.xyz/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl", hash = "sha256:1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85" },
+    { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl", hash = "sha256:1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85" },
 ]
 
 [[package]]
